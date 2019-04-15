@@ -8,8 +8,8 @@ Doesn't support (yet) precise symbol positioning on page so text order can diffe
 
 Install via nuget: PdfSharpTextExtractor package
 
-```
-sh dotnet add package PdfSharpTextExtractor
+```sh
+dotnet add package PdfSharpTextExtractor
 ```
 
 Install via git:
