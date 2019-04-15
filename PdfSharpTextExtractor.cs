@@ -49,7 +49,7 @@ namespace PdfSharpTextExtractor
         }
 
 
-        public PdfPage page { get; set; }
+        internal PdfPage page { get; set; }
         PdfDocument document { get; }
 
         public Extractor(PdfDocument doc)
@@ -205,7 +205,7 @@ namespace PdfSharpTextExtractor
                         if (ef < 0) ef = map.Length;
 
                         // parsing ranges
-                        string[] Ranges = map.Substring(bf + 13, ef - (bf + 13)).Split('\n');
+                        string[] Ranges = map.Substring(bf + 13, ef - (bf + 13)).Split('\n','\r');
                         foreach (string range in Ranges)
                         {
                             Match m = Regex.Match(range, "<([0-9abcdef]+)> <([0-9abcdef]+)> <([0-9abcdef]+)>");
@@ -249,7 +249,7 @@ namespace PdfSharpTextExtractor
                         if (ef < 0) ef = map.Length;
 
                         // parsing ranges
-                        string[] Ranges = map.Substring(bf + 11, ef - (bf + 11)).Split('\n');
+                        string[] Ranges = map.Substring(bf + 11, ef - (bf + 11)).Split('\n','\r');
                         foreach (string range in Ranges)
                         {
                             Match m = Regex.Match(range, "<([0-9abcdef]+)> <([0-9abcdef]+)>");
@@ -364,17 +364,9 @@ namespace PdfSharpTextExtractor
         }
         private void ExtractText(COperator obj, StringBuilder target)
         {
-            Console.WriteLine("Op: " + obj.OpCode.OpCodeName + " N: " + obj.Operands.Count);
-
 
             if (obj.OpCode.OpCodeName == OpCodeName.QuoteSingle || obj.OpCode.OpCodeName == OpCodeName.QuoteDbl || obj.OpCode.OpCodeName == OpCodeName.Tj || obj.OpCode.OpCodeName == OpCodeName.TJ)
             {
-                /*foreach (var element in obj.Operands)
-                {
-                    Console.WriteLine("   "+element.ToString());
-                    ExtractText(element, target);
-                }*/
-                //target.Append(" ");
                 if (obj.OpCode.OpCodeName == OpCodeName.QuoteSingle || obj.OpCode.OpCodeName == OpCodeName.QuoteDbl) target.Append("\n");
 
                 if (obj.Operands.Count == 1)
@@ -449,11 +441,12 @@ namespace PdfSharpTextExtractor
         {
             if (curr_font.IsTwoByte)
             {
-                target.Append(string.Join("", elem.Value.Select((c, i) => new { c = c << (1 - i % 2) * 8, i }).GroupBy(o => o.i / 2).Select(g => (char)g.Sum(o => o.c))
-                    .Select(c => curr_font.ToUnicode(c))));
+                foreach (var s in elem.Value.Select((c, i) => new { c = c << (1 - i % 2) * 8, i }).GroupBy(o => o.i / 2).Select(g => (char)g.Sum(o => o.c))
+                    .Select(c => curr_font.ToUnicode(c)))
+                    target.Append(s);
             }
             else
-                target.Append(string.Join("",elem.Value.Select(c=>curr_font.ToUnicode(c))));
+                foreach (var s in elem.Value.Select(c => curr_font.ToUnicode(c))) target.Append(s);
         }
 
         private void ExtractText(CSequence obj, StringBuilder target)
