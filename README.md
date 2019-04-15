@@ -1,6 +1,6 @@
 # PdfSharpTextExtractor
 
-Simple Pdf text extractor based on PDFSharp.\
+Simple Pdf text extractor based on PDFSharp for NET Standard.\
 Supports both single and two-byte fonts, ToUnicode maps, Encodings.\
 Doesn't support (yet) precise symbol positioning on page so text order can differ from the original.
 
