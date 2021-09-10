@@ -252,8 +252,8 @@ namespace PdfSharpTextExtractor
                         string[] Ranges = map.Substring(bf + 11, ef - (bf + 11)).Split('\n','\r');
                         foreach (string range in Ranges)
                         {
-                            Match m = Regex.Match(range, "<([0-9abcdef]+)> <([0-9abcdef]+)>");
-                            if (m.Success)
+                            var ms = Regex.Matches(range, "<([0-9abcdef]+)> <([0-9abcdef]+)>");
+                            if (var m in ms.Cast<Match>())
                             {
                                 int st = int.Parse(m.Groups[1].Value, System.Globalization.NumberStyles.HexNumber);
                                 st = Math.Min(st, ushort.MaxValue- 1);
