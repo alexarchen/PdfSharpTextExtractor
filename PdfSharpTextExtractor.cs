@@ -364,7 +364,11 @@ namespace PdfSharpTextExtractor
         }
         private void ExtractText(COperator obj, StringBuilder target)
         {
-
+            if (obj.OpCode.OpCodeName == OpCodeName.ET)
+            {
+                target.Append('\n');
+            }
+            else
             if (obj.OpCode.OpCodeName == OpCodeName.QuoteSingle || obj.OpCode.OpCodeName == OpCodeName.QuoteDbl || obj.OpCode.OpCodeName == OpCodeName.Tj || obj.OpCode.OpCodeName == OpCodeName.TJ)
             {
                 if (obj.OpCode.OpCodeName == OpCodeName.QuoteSingle || obj.OpCode.OpCodeName == OpCodeName.QuoteDbl) target.Append("\n");
